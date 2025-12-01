@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Deteksi Kanker Payudara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdf2f8; /* Pink sangat muda */
+        }
+        
+        /* Style saat checkbox dipilih */
+        .checkbox-wrapper input:checked + div {
+            background-color: #db2777; /* Pink-600 */
+            border-color: #db2777;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(219, 39, 119, 0.3);
+        }
+        
+        /* Memunculkan ikon centang */
+        .checkbox-wrapper input:checked + div .check-icon {
+            opacity: 1;
+        }
+
+        /* Mengubah warna teks menjadi putih saat dipilih agar kontras */
+        .checkbox-wrapper input:checked + div span {
+            color: white !important;
+        }
+        
+        .checkbox-wrapper div {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- UPDATED ANIMATIONS --- */
+        
+        /* Class untuk animasi masuk */
+        .fade-in {
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        /* Class untuk animasi keluar */
+        .fade-out {
+            animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.98); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        @keyframes fadeOut {
+            from { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+            to { 
+                opacity: 0; 
+                transform: translateY(-20px) scale(0.98); 
+            }
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #be185d, #db2777);
+        }
+        /* Animation for background blobs */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- LANDING PAGE SECTION -->
+    <!-- Added fade-in class initially so it animates on first load too -->
+    <section id="landingPage" class="flex-grow flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-pink-100 fade-in">
+        <!-- Background Elements (Enhanced) -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+            <!-- Large animated blobs -->
+            <div class="absolute -top-40 -right-40 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+            <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-4000"></div>
+            
+            <!-- Subtle ribbon patterns -->
+            <div class="absolute top-10 left-10 opacity-10">
+                <i class="fas fa-ribbon text-6xl text-pink-300 transform -rotate-12"></i>
+            </div>
+            <div class="absolute bottom-20 right-20 opacity-10">
+                <i class="fas fa-ribbon text-8xl text-pink-300 transform rotate-12"></i>
+            </div>
+             <div class="absolute top-1/3 right-1/4 opacity-5">
+                <i class="fas fa-heartbeat text-5xl text-pink-400"></i>
+            </div>
+            
+            <!-- Diagonal lines pattern -->
+            <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23db2777\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M0 40L40 0H20L0 20M40 40V20L20 40\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+        </div>
+
+        <div class="relative z-10 max-w-5xl w-full text-center">
+            
+            <!-- Hero Icon -->
+            <div class="mb-8 inline-block relative group">
+                <div class="absolute inset-0 bg-pink-200 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                <div class="relative bg-white w-28 h-28 rounded-full flex items-center justify-center shadow-xl border-4 border-pink-50">
+                    <i class="fas fa-ribbon text-6xl text-gradient bg-gradient-to-br from-pink-500 to-pink-700"></i>
+                </div>
+            </div>
+            
+            <!-- Main Titles -->
+            <div class="space-y-4 mb-8">
+                <h2 class="text-pink-600 font-bold tracking-wider text-sm uppercase bg-pink-50 inline-block px-4 py-1 rounded-full border border-pink-100 shadow-sm">Sistem Pakar Medis</h2>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight drop-shadow-sm">
+                    Deteksi Dini <br>
+                    <span class="text-gradient bg-gradient-to-r from-pink-600 to-purple-600">Kanker Payudara</span>
+                </h1>
+                <p class="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                    Lakukan pemeriksaan awal mandiri dengan metode ilmiah. Cepat, privat, dan berdasarkan basis pengetahuan medis terpercaya.
+                </p>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="mb-16">
+                <button onclick="startApp()" class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-pink-600 font-lg rounded-full hover:bg-pink-700 hover:shadow-2xl hover:-translate-y-1 ring-offset-2 focus:ring-4 ring-pink-300 shadow-lg shadow-pink-200/50">
+                    <span class="mr-2 text-lg">Mulai Konsultasi Sekarang</span>
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    <div class="absolute inset-0 rounded-full ring-4 ring-white/20 group-hover:ring-white/40 transition-all"></div>
+                </button>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
+                <div class="bg-white/70 backdrop-blur-md p-6 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-4 text-pink-600 mx-auto md:mx-0 group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-network-wired text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg mb-2">Metode Handal</h3>
+                    <p class="text-sm text-gray-500">Menggabungkan algoritma <em>Forward Chaining</em> untuk penelusuran dan <em>Certainty Factor</em> untuk tingkat keyakinan.</p>
+                </div>
+                <div class="bg-white/70 backdrop-blur-md p-6 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 text-purple-600 mx-auto md:mx-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-database text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg mb-2">Basis Data Lengkap</h3>
+                    <p class="text-sm text-gray-500">Mencakup 14 gejala klinis utama dan 8 klasifikasi stadium penyakit dari data medis.</p>
+                </div>
+                <div class="bg-white/70 backdrop-blur-md p-6 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 text-blue-600 mx-auto md:mx-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-file-medical-alt text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-lg mb-2">Hasil Transparan</h3>
+                    <p class="text-sm text-gray-500">Menampilkan detail perhitungan matematis di balik setiap diagnosa yang diberikan.</p>
+                </div>
+            </div>
+
+            <!-- Citation / Reference Section -->
+            <div class="border-t border-pink-100/50 pt-8 max-w-3xl mx-auto">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Referensi Penelitian</p>
+                <div class="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-sm text-gray-600 border border-pink-100 flex items-start gap-3 text-left shadow-sm hover:shadow transition-shadow">
+                    <i class="fas fa-book-medical mt-1 text-pink-500"></i>
+                    <div>
+                        <p class="font-medium text-gray-800">"Purwarupa Sistem Pakar Dengan Metode Forward Chaining Dan Certainty Factor Untuk Mendeteksi Penyakit Kanker Payudara"</p>
+                        <p class="text-xs text-gray-500 mt-1">Implementasi logika diagnosa dan basis pengetahuan sistem ini diadaptasi dari jurnal penelitian tersebut.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="mt-12 text-sm text-gray-400">
+                &copy; 2025 Sistem Pakar Kanker Payudara v2.0
+            </footer>
+
+        </div>
+    </section>
+
+    <!-- APP SECTION (Hidden by default) -->
+    <!-- Removed static fade-in class to handle it via JS for smoother re-entry -->
+    <div id="appSection" class="hidden min-h-screen flex flex-col">
+        
+        <!-- Navbar -->
+        <nav class="bg-white border-b border-pink-100 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/90">
+            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3 cursor-pointer group" onclick="showLanding()">
+                    <div class="w-10 h-10 bg-pink-600 rounded-lg flex items-center justify-center text-white shadow-lg group-hover:bg-pink-700 transition">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800 leading-none">SP Kanker Payudara</h1>
+                        <span class="text-xs text-pink-600 font-medium">Forward Chaining + CF</span>
+                    </div>
+                </div>
+                <button onclick="showLanding()" class="text-sm font-medium text-gray-500 hover:text-pink-600 transition-colors flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50">
+                    <i class="fas fa-home"></i> 
+                    <span class="hidden sm:inline">Kembali ke Depan</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8 max-w-4xl flex-grow">
+            
+            <!-- Header Section -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Formulir Diagnosa</h2>
+                <div class="w-16 h-1 bg-pink-500 mx-auto rounded-full mb-4"></div>
+                <p class="text-gray-500 max-w-lg mx-auto">Silakan pilih gejala-gejala yang Anda alami di bawah ini. Kejujuran data sangat mempengaruhi akurasi hasil.</p>
+            </div>
+
+            <!-- Symptoms Form -->
+            <form id="diagnosisForm" onsubmit="return false;">
+                <div class="bg-white rounded-2xl shadow-sm border border-pink-100 p-6 md:p-8 mb-8">
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
+                        <h3 class="text-lg font-bold text-gray-700 flex items-center gap-2">
+                            <i class="far fa-check-square text-pink-500"></i> Pilih Gejala (G01 - G14)
+                        </h3>
+                        <span class="text-xs bg-pink-50 text-pink-600 px-3 py-1 rounded-full font-medium">Multi-select</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="symptomsContainer">
+                        <!-- Gejala akan di-generate oleh JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col md:flex-row gap-4 justify-center mb-12">
+                    <button onclick="diagnose()" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg shadow-pink-200 transform transition hover:scale-[1.02] duration-200 flex items-center justify-center gap-2">
+                        <i class="fas fa-stethoscope"></i> Analisis Sekarang
+                    </button>
+                    <button onclick="resetForm()" class="bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-600 font-bold py-4 px-8 rounded-xl transition duration-200 hover:bg-gray-50 flex items-center justify-center gap-2">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </form>
+
+            <!-- Result Section (Hidden by default) -->
+            <div id="resultSection" class="hidden">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-pink-100 relative">
+                    <!-- Header Hasil (Pink) -->
+                    <div class="bg-pink-600 p-6 text-white text-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/medical-icons.png')]"></div>
+                        <div class="relative z-10">
+                            <h3 class="text-lg font-medium text-pink-100 uppercase tracking-wider mb-1">Hasil Analisis Sistem</h3>
+                            <h2 id="diseaseName" class="text-3xl md:text-4xl font-bold text-white mb-4">Stadium X</h2>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Hasil -->
+                    <div class="p-8">
+                        <div class="flex flex-col items-center justify-center mb-8">
+                            <div class="relative w-40 h-40 flex items-center justify-center">
+                                <!-- Lingkaran progress simulasi -->
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#f3f4f6" stroke-width="8"></circle>
+                                    <circle id="progressCircle" cx="50" cy="50" r="45" fill="none" stroke="#db2777" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="0" stroke-linecap="round"></circle>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span id="confidenceValue" class="text-4xl font-extrabold text-gray-800">0%</span>
+                                    <span class="text-xs text-gray-500 uppercase font-bold mt-1">Keyakinan</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="solutionContainer" class="bg-pink-50/50 p-6 rounded-2xl border border-pink-100 mb-8">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                <i class="fas fa-calculator text-pink-500"></i> Detail Perhitungan (Trace):
+                            </h4>
+                            <ul id="calculationDetails" class="space-y-3 text-sm text-gray-600">
+                                <!-- Detail perhitungan muncul di sini -->
+                            </ul>
+                        </div>
+
+                        <!-- Disclaimer -->
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg text-sm text-yellow-800 flex gap-3 mb-8">
+                            <i class="fas fa-exclamation-triangle mt-1"></i>
+                            <div>
+                                <p class="font-bold">Penting:</p>
+                                <p>Hasil ini merupakan diagnosa awal berdasarkan algoritma komputer. Segera konsultasikan dengan dokter spesialis onkologi untuk pemeriksaan medis fisik (USG, Mammografi, Biopsi) lebih lanjut.</p>
+                            </div>
+                        </div>
+
+                        <!-- Other Possibilities Table -->
+                        <div>
+                            <h4 class="font-bold text-gray-700 mb-4 px-2 border-l-4 border-gray-300 pl-3">Kemungkinan Diagnosa Lain:</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm border-collapse">
+                                    <thead class="bg-gray-50 text-gray-600 uppercase text-xs tracking-wider">
+                                        <tr>
+                                            <th class="p-4 border-b border-gray-100 rounded-tl-lg">Kode</th>
+                                            <th class="p-4 border-b border-gray-100">Nama Penyakit</th>
+                                            <th class="p-4 border-b border-gray-100 rounded-tr-lg text-right">Akurasi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="otherDiseasesTable" class="text-gray-700">
+                                        <!-- Rows generated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer App -->
+        <footer class="bg-white border-t border-gray-100 py-8 mt-auto">
+            <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Sistem Pakar Kanker Payudara.</p>
+                <p class="mt-1 text-xs">Dikembangkan menggunakan Metode Forward Chaining & Certainty Factor.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // --- 1. DATA BASIS PENGETAHUAN ---
+        const diseases = {
+            'P01': 'Kanker Payudara Stadium 0',
+            'P02': 'Kanker Payudara Stadium 1',
+            'P03': 'Kanker Payudara Stadium 2A',
+            'P04': 'Kanker Payudara Stadium 2B',
+            'P05': 'Kanker Payudara Stadium 3A',
+            'P06': 'Kanker Payudara Stadium 3B',
+            'P07': 'Kanker Payudara Stadium 3C',
+            'P08': 'Kanker Payudara Stadium 4'
+        };
+
+        const symptoms = [
+            { code: 'G01', name: 'Kulit payudara berwarna kemerahan' },
+            { code: 'G02', name: 'Terjadi pembengkakan pada payudara' },
+            { code: 'G03', name: 'Payudara mengoreng atau menjadi borok (luka-luka)' },
+            { code: 'G04', name: 'Tidak terdapat benjolan pada payudara' },
+            { code: 'G05', name: 'Tidak terdapat metastasis pada kelenjar getah bening' },
+            { code: 'G06', name: 'Terdapat benjolan diameter 2 cm atau kurang' },
+            { code: 'G07', name: 'Terdapat benjolan diameter 2 cm hingga 5 cm' },
+            { code: 'G08', name: 'Metastasis ke KGB regional (dapat digerakkan)' },
+            { code: 'G09', name: 'Terdapat benjolan diameter lebih dari 5 cm' },
+            { code: 'G10', name: 'Metastasis KGB regional (sulit digerakkan)' },
+            { code: 'G11', name: 'Terdapat benjolan ukuran berapa saja' },
+            { code: 'G12', name: 'Metastasis ke KGB di atas tulang selangka' },
+            { code: 'G13', name: 'Tidak terdapat metastasis jauh' },
+            { code: 'G14', name: 'Terdapat metastasis jauh' }
+        ];
+
+        const rules = [
+            { r: 'R01', g: 'G04', p: 'P01', mb: 0.4, md: 0.0 },
+            { r: 'R02', g: 'G05', p: 'P01', mb: 0.8, md: 0.2 },
+            { r: 'R03', g: 'G13', p: 'P01', mb: 0.8, md: 0.2 },
+            { r: 'R04', g: 'G05', p: 'P02', mb: 0.4, md: 0.2 },
+            { r: 'R05', g: 'G13', p: 'P02', mb: 0.8, md: 0.2 },
+            { r: 'R06', g: 'G06', p: 'P02', mb: 0.8, md: 0.0 },
+            { r: 'R07', g: 'G13', p: 'P03', mb: 0.6, md: 0.2 },
+            { r: 'R08', g: 'G07', p: 'P03', mb: 0.8, md: 0.0 },
+            { r: 'R09', g: 'G08', p: 'P03', mb: 0.4, md: 0.2 },
+            { r: 'R10', g: 'G13', p: 'P04', mb: 0.6, md: 0.2 },
+            { r: 'R11', g: 'G08', p: 'P04', mb: 0.4, md: 0.2 },
+            { r: 'R12', g: 'G09', p: 'P04', mb: 0.4, md: 0.0 },
+            { r: 'R13', g: 'G13', p: 'P05', mb: 0.4, md: 0.2 },
+            { r: 'R14', g: 'G09', p: 'P05', mb: 0.6, md: 0.0 },
+            { r: 'R15', g: 'G10', p: 'P05', mb: 0.6, md: 0.2 },
+            { r: 'R16', g: 'G02', p: 'P06', mb: 0.4, md: 0.0 },
+            { r: 'R17', g: 'G13', p: 'P06', mb: 0.4, md: 0.2 },
+            { r: 'R18', g: 'G10', p: 'P06', mb: 0.6, md: 0.2 },
+            { r: 'R19', g: 'G11', p: 'P06', mb: 0.8, md: 0.0 },
+            { r: 'R20', g: 'G03', p: 'P06', mb: 0.4, md: 0.0 },
+            { r: 'R21', g: 'G01', p: 'P06', mb: 0.4, md: 0.0 },
+            { r: 'R22', g: 'G02', p: 'P07', mb: 0.6, md: 0.0 },
+            { r: 'R23', g: 'G13', p: 'P07', mb: 0.4, md: 0.2 },
+            { r: 'R24', g: 'G11', p: 'P07', mb: 0.8, md: 0.0 },
+            { r: 'R25', g: 'G03', p: 'P07', mb: 0.4, md: 0.0 },
+            { r: 'R26', g: 'G01', p: 'P07', mb: 0.4, md: 0.0 },
+            { r: 'R27', g: 'G12', p: 'P07', mb: 0.4, md: 0.2 },
+            { r: 'R28', g: 'G02', p: 'P08', mb: 0.4, md: 0.0 },
+            { r: 'R29', g: 'G11', p: 'P08', mb: 0.8, md: 0.0 },
+            { r: 'R30', g: 'G03', p: 'P08', mb: 0.4, md: 0.0 },
+            { r: 'R31', g: 'G01', p: 'P08', mb: 0.4, md: 0.0 },
+            { r: 'R32', g: 'G12', p: 'P08', mb: 0.4, md: 0.2 },
+            { r: 'R33', g: 'G14', p: 'P08', mb: 0.8, md: 0.2 }
+        ];
+
+        // --- 2. LOGIKA NAVIGASI (IMPROVED TRANSITIONS) ---
+        
+        // Fungsi umum untuk perpindahan halaman dengan transisi
+        function switchPage(hideId, showId) {
+            const hideEl = document.getElementById(hideId);
+            const showEl = document.getElementById(showId);
+            
+            // 1. Animasi keluar
+            hideEl.classList.remove('fade-in'); // Pastikan tidak ada konflik
+            hideEl.classList.add('fade-out');
+
+            // 2. Tunggu animasi keluar selesai sebelum menampilkan halaman baru
+            setTimeout(() => {
+                hideEl.classList.add('hidden');
+                hideEl.classList.remove('fade-out');
+                
+                // 3. Animasi masuk
+                showEl.classList.remove('hidden');
+                showEl.classList.add('fade-in');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 400); // Durasi delay (sesuaikan dengan animasi CSS 0.4s)
+        }
+
+        function startApp() {
+            switchPage('landingPage', 'appSection');
+        }
+
+        function showLanding() {
+            switchPage('appSection', 'landingPage');
+        }
+
+        // --- 3. LOGIKA UTAMA SYSTEM PAKAR ---
+
+        function renderSymptoms() {
+            const container = document.getElementById('symptomsContainer');
+            let html = '';
+            
+            symptoms.forEach(sym => {
+                html += `
+                <label class="checkbox-wrapper relative cursor-pointer group">
+                    <input type="checkbox" value="${sym.code}" class="peer sr-only">
+                    <div class="p-4 rounded-xl border-2 border-pink-100 bg-white hover:bg-pink-50 transition-all duration-200 flex items-start gap-3 h-full shadow-sm hover:shadow-md">
+                        <div class="w-6 h-6 rounded border-2 border-pink-200 flex items-center justify-center bg-white mt-0.5 flex-shrink-0 group-hover:border-pink-400">
+                            <i class="fas fa-check text-xs text-pink-600 opacity-0 check-icon transition-opacity"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-pink-700 text-sm block mb-1">${sym.code}</span>
+                            <span class="text-sm text-gray-700 leading-tight block group-hover:text-gray-900">${sym.name}</span>
+                        </div>
+                    </div>
+                </label>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function diagnose() {
+            const inputs = document.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedSymptoms = Array.from(inputs).map(input => input.value);
+
+            if (selectedSymptoms.length === 0) {
+                alert("Mohon pilih setidaknya satu gejala yang Anda alami.");
+                return;
+            }
+
+            let diseaseScores = {}; 
+            Object.keys(diseases).forEach(code => {
+                diseaseScores[code] = {
+                    cf: 0,
+                    traces: []
+                };
+            });
+
+            Object.keys(diseases).forEach(dCode => {
+                const relevantRules = rules.filter(r => r.p === dCode && selectedSymptoms.includes(r.g));
+
+                if (relevantRules.length > 0) {
+                    let oldCF = 0;
+
+                    relevantRules.forEach((rule, index) => {
+                        let currentCF = rule.mb - rule.md;
+
+                        diseaseScores[dCode].traces.push({
+                            rule: rule.r,
+                            symptom: rule.g,
+                            cf_rule: currentCF.toFixed(2),
+                            old_cf: oldCF.toFixed(2)
+                        });
+
+                        if (index === 0) {
+                            oldCF = currentCF;
+                        } else {
+                            oldCF = oldCF + (currentCF * (1 - oldCF));
+                        }
+                    });
+
+                    diseaseScores[dCode].cf = oldCF;
+                }
+            });
+
+            let sortedResults = Object.keys(diseaseScores)
+                .map(code => ({
+                    code: code,
+                    name: diseases[code],
+                    cf: diseaseScores[code].cf,
+                    traces: diseaseScores[code].traces
+                }))
+                .filter(res => res.cf > 0)
+                .sort((a, b) => b.cf - a.cf);
+
+            displayResults(sortedResults);
+        }
+
+        function displayResults(results) {
+            const resultSection = document.getElementById('resultSection');
+            resultSection.classList.remove('hidden');
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+
+            if (results.length > 0) {
+                const bestMatch = results[0];
+                const percentage = (bestMatch.cf * 100).toFixed(2);
+                
+                const circle = document.getElementById('progressCircle');
+                const radius = circle.r.baseVal.value;
+                const circumference = radius * 2 * Math.PI;
+                const offset = circumference - (bestMatch.cf * circumference);
+                
+                circle.style.strokeDashoffset = circumference;
+                setTimeout(() => {
+                    circle.style.transition = 'stroke-dashoffset 1s ease-in-out';
+                    circle.style.strokeDashoffset = offset;
+                }, 100);
+
+                document.getElementById('diseaseName').innerText = bestMatch.name;
+                document.getElementById('confidenceValue').innerText = percentage + "%";
+
+                const detailsList = document.getElementById('calculationDetails');
+                detailsList.innerHTML = '';
+                
+                bestMatch.traces.forEach((trace, idx) => {
+                    let calcExplanation = (idx === 0) 
+                        ? `Nilai awal <b>${trace.cf_rule}</b> dari ${trace.rule}`
+                        : `Kombinasi dengan ${trace.rule} (${trace.cf_rule}): <br><span class="pl-4 text-xs font-mono text-gray-500">${trace.old_cf} + ${trace.cf_rule} * (1 - ${trace.old_cf}) = <b>${(Number(trace.old_cf) + Number(trace.cf_rule) * (1 - Number(trace.old_cf))).toFixed(4)}</b></span>`;
+
+                    let item = `
+                        <li class="bg-white p-3 rounded-lg border border-pink-100 shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <span class="font-bold text-pink-600 text-xs uppercase">Langkah ${idx + 1}</span>
+                                <span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600">Gejala ${trace.symptom}</span>
+                            </div>
+                            <div class="mt-1 text-sm">${calcExplanation}</div>
+                        </li>`;
+                    detailsList.innerHTML += item;
+                });
+
+                const otherTable = document.getElementById('otherDiseasesTable');
+                let tableHtml = '';
+                
+                for(let i = 1; i < results.length; i++) {
+                    const res = results[i];
+                    tableHtml += `
+                        <tr class="border-b border-gray-50 hover:bg-pink-50/50 transition-colors">
+                            <td class="p-4 font-mono text-sm text-pink-600 font-semibold">${res.code}</td>
+                            <td class="p-4 font-medium text-gray-800">${res.name}</td>
+                            <td class="p-4 text-right">
+                                <span class="inline-block px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-bold text-gray-700 shadow-sm">
+                                    ${(res.cf * 100).toFixed(2)}%
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                if (results.length <= 1) {
+                     tableHtml = '<tr><td colspan="3" class="p-6 text-center text-gray-400 italic">Tidak ada kemungkinan penyakit lain yang terdeteksi secara signifikan.</td></tr>';
+                }
+                
+                otherTable.innerHTML = tableHtml;
+
+            } else {
+                document.getElementById('diseaseName').innerText = "Tidak Terdeteksi";
+                document.getElementById('confidenceValue').innerText = "0%";
+                document.getElementById('progressCircle').style.strokeDashoffset = 283;
+                document.getElementById('calculationDetails').innerHTML = "<li class='text-center p-4 text-gray-500 italic'>Gejala yang Anda pilih tidak memiliki pola yang cocok dengan basis pengetahuan penyakit kanker payudara kami.</li>";
+                document.getElementById('otherDiseasesTable').innerHTML = "";
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('diagnosisForm').reset();
+            document.getElementById('resultSection').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderSymptoms);
+
+    </script>
+</body>
+</html>
